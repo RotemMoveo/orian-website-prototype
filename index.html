@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>אוריין · פרוטוטייפ עמוד הבית</title>
+<meta name="description" content="שני קונספטים לעמוד הבית של אוריין — פרוטוטייפ חי.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23F4F1EC'/><rect x='6' y='14' width='20' height='4' fill='%23D01B21'/></svg>">
+<style>
+  :root{
+    --red:#D01B21; --red-bright:#E23940;
+    --ink:#141619; --muted:#5B5F66; --paper:#F4F1EC;
+    --ln:1px;
+    --line:rgba(20,22,25,.14);
+    --gutter:clamp(22px,5vw,72px);
+    --e-box:cubic-bezier(.83,0,.17,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{min-height:100dvh;display:flex;flex-direction:column;
+    background:var(--paper);color:var(--ink);
+    font-family:"Assistant","Heebo","Rubik",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    font-weight:300;line-height:1.5;
+    padding:clamp(28px,5vh,64px) var(--gutter)}
+
+  header{flex:none;display:flex;align-items:flex-start;justify-content:space-between;
+    gap:24px;flex-wrap:wrap}
+  .mark{display:block;width:clamp(150px,17vw,230px);height:auto}
+  .eyebrow{font-size:clamp(11.5px,.95vw,13px);font-weight:400;
+    letter-spacing:.13em;color:var(--muted);padding-top:6px}
+
+  main{flex:1;display:flex;flex-direction:column;justify-content:center;
+    padding-block:clamp(40px,8vh,96px)}
+  h1{font-size:clamp(30px,5.4vw,64px);font-weight:400;line-height:1.08;
+    letter-spacing:-.01em;max-width:16ch}
+  h1 em{font-style:normal;color:var(--red)}
+  .lede{margin-top:clamp(14px,2vh,22px);max-width:46ch;
+    font-size:clamp(15px,1.25vw,18px);color:var(--muted)}
+
+  /* the list: one hairline per row, and the row IS the link */
+  .list{margin-top:clamp(34px,6vh,72px);border-top:var(--ln) solid var(--line)}
+  .row{display:flex;align-items:center;gap:clamp(16px,2.4vw,40px);
+    padding-block:clamp(20px,3vh,34px);
+    border-bottom:var(--ln) solid var(--line);
+    text-decoration:none;color:inherit;
+    transition:padding-inline-start .45s var(--e-box)}
+  .row:hover,.row:focus-visible{padding-inline-start:clamp(6px,1vw,16px)}
+  .row:focus-visible{outline:2px solid var(--red-bright);outline-offset:6px}
+  .n{flex:none;width:2.2ch;font-size:clamp(11.5px,.95vw,13px);font-weight:400;
+    letter-spacing:.08em;color:var(--red)}
+  .t{flex:1;min-width:0}
+  .t b{display:block;font-size:clamp(19px,2.1vw,30px);font-weight:400;line-height:1.2;
+    transition:color .22s ease}
+  .t span{display:block;margin-top:5px;font-size:clamp(13px,1.05vw,15px);color:var(--muted)}
+  .row:hover .t b,.row:focus-visible .t b{color:var(--red)}
+
+  /* the concept's own CTA shape, pared back: an arrow in a ring */
+  .go{flex:none;display:grid;place-items:center;
+    width:clamp(38px,3.4vw,48px);height:clamp(38px,3.4vw,48px);
+    border:var(--ln) solid var(--line);border-radius:50%;
+    transition:background .3s var(--e-box),border-color .3s var(--e-box),color .3s var(--e-box)}
+  .go svg{display:block;width:44%;height:auto;
+    transition:transform .45s var(--e-box)}
+  .go svg path{stroke-width:1.5;vector-effect:non-scaling-stroke}
+  .row:hover .go,.row:focus-visible .go{background:var(--red);border-color:var(--red);color:#fff}
+  .row:hover .go svg,.row:focus-visible .go svg{transform:translateX(-3px)}
+
+  footer{flex:none;display:flex;align-items:baseline;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;
+    font-size:clamp(11.5px,.95vw,13px);letter-spacing:.06em;color:var(--muted)}
+  footer a{color:inherit;text-decoration:none;border-bottom:var(--ln) solid var(--line);
+    padding-bottom:2px;transition:color .22s ease,border-color .22s ease}
+  footer a:hover{color:var(--red);border-color:var(--red)}
+
+  @media(max-width:560px){
+    .t span{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <img class="mark" src="orian-logo.png" alt="ORIAN" width="1200" height="309">
+    <span class="eyebrow">פרוטוטייפ · עמוד הבית</span>
+  </header>
+
+  <main>
+    <h1>שני קונספטים<br>ל<em>עמוד הבית</em> של אוריין</h1>
+    <p class="lede">שני העמודים למטה הם פרוטוטייפים חיים — הכל אמיתי ורץ בדפדפן: התנועה, הגלילה, הווידאו והמצבים הרספונסיביים. גללו בתוך כל עמוד כדי לראות את הרצף המלא.</p>
+
+    <nav class="list">
+      <a class="row" href="concept-1-hero.html">
+        <span class="n">01</span>
+        <span class="t">
+          <b>קונספט 1</b>
+          <span>קו אחד שרץ לאורך העמוד, מנקודה אחת לנקודה שנייה</span>
+        </span>
+        <span class="go" aria-hidden="true">
+          <svg viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7H1"/><path d="M8 1 1 7l7 6"/></svg>
+        </span>
+      </a>
+
+      <a class="row" href="concept-2-hero.html">
+        <span class="n">02</span>
+        <span class="t">
+          <b>קונספט 2</b>
+          <span>פאזל של ריבועי וידאו שנסגר לתמונה אחת</span>
+        </span>
+        <span class="go" aria-hidden="true">
+          <svg viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7H1"/><path d="M8 1 1 7l7 6"/></svg>
+        </span>
+      </a>
+    </nav>
+  </main>
+
+  <footer>
+    <span>Moveo · עבור אוריין</span>
+    <a href="https://github.com/RotemMoveo/orian-website-prototype">הריפו בגיטהאב</a>
+  </footer>
+
+</body>
+</html>
