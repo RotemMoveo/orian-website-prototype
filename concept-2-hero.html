@@ -81,6 +81,12 @@
      The gap is small on purpose — enough to separate, not enough to float. */
   --strip:clamp(40px,3.1vw,54px);
   --strip-gap:clamp(7px,.8vw,13px);
+  /* it is held off the two page edges by the SAME amount, so the film reads as
+     one narrow margin round all three of the strip's free sides instead of a
+     band on top and a full bleed everywhere else. Small on purpose, and always
+     smaller than --gutter: the content subtracts it back out of its own
+     padding, so the label still stands under the logo. */
+  --strip-side:var(--strip-gap);
   /* THE CLIMB. One screenful and no other value: shorter and the section
      underneath unpins while the panel is still climbing (it jerks up from
      behind it); longer and the pinned section is held behind something that
@@ -567,10 +573,13 @@ h1 .ch{display:inline-block;opacity:0;transform:translateY(26%) scaleY(0);transf
 
    .reel.up wins over html.reveal on specificity (three classes to two-plus-an-
    element); do not reorder them into equal weight. ---- */
-.nstrip{position:absolute;left:0;right:0;top:calc(var(--bar) + var(--strip-gap));
+.nstrip{position:absolute;left:var(--strip-side);right:var(--strip-side);
+  top:calc(var(--bar) + var(--strip-gap));
   z-index:5;height:var(--strip);
   display:flex;align-items:stretch;
-  padding-inline:var(--gutter);
+  /* the inset is taken back off here, so the words keep the PAGE's gutter and
+     stay in line with the logo and the language link above them */
+  padding-inline:calc(var(--gutter) - var(--strip-side));
   /* the old pane's own ground, carried over: white worn thin so the film
      stays just visible through it. No top rule — the band of film above it
      is the division now, and a hairline there would only fence it back onto
