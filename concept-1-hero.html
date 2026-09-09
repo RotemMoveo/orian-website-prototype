@@ -1478,14 +1478,27 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.03em;height:.0
   transition:opacity .3s ease calc(var(--cl-r0) + var(--cl-rf,.6) * var(--cl-rt))}
 .cl.in .cl-v::before,.cl.in .v-rail .cl-vl::before{opacity:1}
 
-/* ---- the mark: parked behind the rule on its right, then slid out and set dead centre ---- */
+/* ---- the mark: IT SIMPLY COMES UP WHERE IT STANDS (2026-09-09) ----------------------
+   "גם בחשיפה של הלוגואים - שלא יהיה את הקו האנכי שחושף אותם." It used to be parked
+   at `translateX(101%)` — fully behind the rule on its right — and slid out of the
+   clip as its rule finished drawing, so the vertical line was literally what
+   uncovered each mark. Now the rules still unfold in their chain and the marks
+   simply INK IN where they already are: one fade, nothing moving.
+   THE CHAIN'S RHYTHM IS UNTOUCHED. The delay is the same expression it always was
+   (`--cl-c0` plus two steps per cell), so the order still reads mark, rule, mark,
+   rule out to the far edge — it is only the CAUSE that is gone, not the beat.
+   .cl-mask KEEPS `overflow:hidden`: with nothing translating it clips nothing (every
+   img is capped at 100% of its cell), and it is the layer a slide would need again.
+   The heading above still comes out from behind the line (`.cl-title > span`) — she
+   asked about the marks, and that one is a word emerging from a rule, not a picture
+   being uncovered by it. ---- */
 .cl-mask{overflow:hidden}
 .cl-mark{display:flex;align-items:center;justify-content:center;   /* centred between its two rules */
   height:clamp(90px,9.4vw,134px);padding-inline:clamp(14px,1.5vw,24px);
-  transform:translateX(101%);                       /* fully behind the rule */
-  transition:transform 1s cubic-bezier(.66,0,.16,1)
+  opacity:0;
+  transition:opacity .8s ease
              calc(var(--cl-c0) + 2 * var(--ci,0) * var(--cl-cs))}
-.cl.in .cl-mark{transform:none}
+.cl.in .cl-mark{opacity:1}
 .cl-mark img{height:calc(var(--logo-h) * var(--logo-k,1));width:auto;
   max-width:100%;max-height:100%;object-fit:contain;
   opacity:.74;transition:opacity .25s ease}
@@ -1524,7 +1537,9 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.03em;height:.0
 
 @media(prefers-reduced-motion:reduce){
   .cl-vl{transform:scaleY(1)!important}
-  .cl-mark,.cl-title > span{transform:none!important}
+  .cl-title > span{transform:none!important}
+  /* the marks are simply THERE: what they hold back now is opacity, not a slide */
+  .cl-mark{opacity:1!important;transition:none!important}
   .cl-title .rl::after{transform:scaleX(1)!important}
   .cl-v::before,.v-rail .cl-vl::before{opacity:1!important}
 }

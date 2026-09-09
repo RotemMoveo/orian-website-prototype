@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
-# Sync the two concepts (and their assets) out of the design folder and push.
+# Sync the published concepts (and their assets) out of the design folder and push.
 # The HTML is edited over there; this repo is only the published copy.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SRC="$(cd "$REPO/../עיצוב עמוד הבית" && pwd)"
+SRC="$(cd "$REPO/../כיוונים" && pwd)"
 
 FILES=(
   "concept-1-hero.html"
   "concept-2-hero.html"
+  "concept-3-hero.html"
   "IMAGE - INDUSTRIES - consumer.jpg"
   "IMAGE - INDUSTRIES - defence.jpg"
   "IMAGE - INDUSTRIES - food.jpg"
@@ -19,6 +20,10 @@ FILES=(
   "clients-video-poster.jpg"
   "hero-video.mp4"
   "hero-video-poster.jpg"
+  "hero-video-2.mp4"
+  "hero-video-2-poster.jpg"
+  "truck-drive.mp4"
+  "truck-drive-poster.jpg"
 )
 
 for f in "${FILES[@]}"; do
