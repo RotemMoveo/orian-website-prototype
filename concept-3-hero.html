@@ -5649,10 +5649,30 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.02em;height:.0
    otherwise exactly what they were.
    The negative inline-start margin is what keeps the word itself on --cx while
    the pill keeps its own padding. */
+/* ---- AND THE HEAD IS A REAL <button> SINCE 2026-09-10, because on a phone it
+   opens its list ([[the accordion]], in the 640 query). It is a control at
+   every width and does nothing at all above 640 — the script will not toggle
+   outside its own media query — which is the cheap half of the trade: the
+   alternative is a `<span>` wearing `role="button"` and a tabindex, i.e. an
+   element that has to be TOLD to be what a button already is.
+   THE RESET IS FOUR LINES AND EVERY ONE OF THEM IS LOAD-BEARING. A button does
+   not inherit its font, so --ff would fall back to the UA's; it centres its
+   text, which in this arrangement is the type line lost; and — the one that is
+   easy to miss — **it does not inherit `line-height` either**, and this label's
+   mark is levelled on `--eb-lh: --lh-body` (see the labels' block). A UA
+   `line-height:normal` here would put four red squares ~1.4px off four lists.
+   `width:100%` is what makes the whole row the target when it folds; it costs
+   the desktop nothing, because a percentage width is treated as auto while an
+   `auto` grid track measures its content. ---- */
 .ft-lbl{position:relative;display:block;margin-bottom:var(--sp-3);
+  appearance:none;-webkit-appearance:none;background:none;border:0;padding:0;
+  width:100%;font-family:inherit;line-height:inherit;text-align:start;
+  cursor:default;
   --eb-lh:var(--lh-body);            /* see the mark's block — this label has no line-height of its own */
   font-size:var(--fs-text);font-weight:var(--w-reg);
   letter-spacing:var(--tr-label);color:var(--red)}
+/* the plus/minus is drawn only when the lists fold — see the 640 query */
+.ft-mk{display:none}
 /* THE GAP IS 2px AND MUST STAY 2px. It went to --sp-1 with the 2026-09-09
    enlargement and came straight back: a list that opens up is a change to the
    ARRANGEMENT, and she asked for the height and the mark only. A taller footer
@@ -6209,10 +6229,115 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.02em;height:.0
   .ft-cols{border-inline-start:0;padding-inline-start:0;
     grid-template-columns:repeat(4,auto)}
 }
+/* ---- THE PHONE'S FOOTER IS CENTRED, AND ITS FOUR LISTS ARE AN ACCORDION
+   (2026-09-10, hers: *"תיצור במובייל את הפוטר כאקורדיון - הכל סגור ורק מה
+   שלוחצים עליו נפתח. בנוסף במובייל שהפוטר יהיה ממורכז"*).
+
+   TWO CHANGES, AND THEY ARE DELIBERATELY ON TWO DIFFERENT SWITCHES:
+   · THE CENTRING is plain CSS in this query — it is how the footer LOOKS at
+     this width and it must not depend on a script.
+   · THE FOLD is scoped to `.ft-cols.acc`, and `.acc` is written by the script
+     off `matchMedia('(max-width:640px)')` — the SAME 640 as this query, and
+     the two have to move together. **The class is not decoration: it is the
+     no-JS contract this page keeps everywhere else** — with no script there is
+     no `.acc`, nothing collapses, and the phone gets a centred footer with all
+     four lists standing open. A CSS-only fold would hide 27 links behind a
+     control that cannot be operated.
+   ---- */
 @media(max-width:640px){
+  /* the rows are flush and the HAIRLINE is what divides them now, so the
+     stack's own gap has to go — a gap plus a rule reads as two divisions */
   .ft-cols{grid-template-columns:minmax(0,1fr);gap:var(--sp-4);justify-content:start}
-  .ft-foot{flex-direction:column;align-items:flex-start;gap:var(--sp-3)}
-  .ft-legal{flex-wrap:wrap;gap:var(--sp-3)}
+  .ft-foot{flex-direction:column;align-items:center;gap:var(--sp-3);text-align:center}
+  .ft-legal{flex-wrap:wrap;justify-content:center;gap:var(--sp-3)}
+
+  /* ---- CENTRED. Every part of the brand block ranges off the type line at
+     every other width; here they all range off the middle. `.ft-par` needs the
+     auto margins as well as the text-align because it is capped at --measure
+     and a capped box does not centre itself. ---- */
+  .ft-brand{text-align:center}
+  .ft-mark{margin-inline:auto}
+  .ft-par{margin-inline:auto;text-align:center}
+  .ft-ways,.ft-soc{justify-content:center}
+  /* the head's square is already IN FLOW at this width (see the labels' block
+     at the top of this query), so centring the row centres the pair */
+  .ft-lbl{justify-content:center;text-align:center}
+  .ft-list{justify-items:center}
+  /* AND THE PILL'S NEGATIVE MARGIN COMES OFF, WHICH IS [[orian-c3-centred-ink]]
+     read the other way round. `.ft-l` is padded `5px var(--sp-2)` — SYMMETRIC —
+     and the negative inline-start margin exists only to hold the WORD on the
+     type line while the pill keeps its padding. Centred there is no type line
+     to hold it to, and left on, it would throw the ink --sp-2 off the middle.
+     A centred control is read by its ink; this one's ink is centred the moment
+     the margin is gone, so there is no correction to write. */
+  .ft-l{margin-inline-start:0}
+
+  /* ================= THE ACCORDION =================================
+     `.ft-col` becomes the two-row grid and the LIST is the collapsing track:
+     `grid-template-rows:auto 0fr -> auto 1fr` with `overflow:hidden` on the
+     row that moves is the one way to animate to a CONTENT height without a
+     magic max-height — the track resolves to the list's own height, so a
+     two-line column and an eleven-line one each open at their own size on the
+     same clock. (The nav sheet up the page uses `max-height:70vh`; that is a
+     cap standing in for a height, and four lists of 11 / 9 / 5 / 2 are exactly
+     where it would show.) `overflow:hidden` is also what makes the item's
+     automatic minimum size 0 — without it the 0fr track floors at the list's
+     min-content height and nothing shuts.
+     THE AIR IS INSIDE THE COLLAPSING BOX. The head gives up its --sp-3 margin
+     for --sp-3 of PADDING (which also makes the row a 56px target), and the
+     list carries the air under the last link itself — air on `.ft-col` would
+     sit outside the track and show as a gap with the row shut. */
+  .ft-cols.acc{gap:0}
+  .ft-cols.acc .ft-col{display:grid;grid-template-rows:auto 0fr;
+    border-top:var(--ln) solid var(--ft-line);
+    transition:grid-template-rows .5s cubic-bezier(.62,0,.2,1)}
+  /* the block CLOSES on a rule as well as opening on one — four rows that
+     open with a hairline and end in air read as an unfinished list */
+  .ft-cols.acc .ft-col:last-child{border-bottom:var(--ln) solid var(--ft-line)}
+  .ft-cols.acc .ft-col.is-open{grid-template-rows:auto 1fr}
+  .ft-cols.acc .ft-lbl{margin-bottom:0;padding-block:var(--sp-3);cursor:pointer}
+  .ft-cols.acc .ft-lbl:focus-visible{outline:var(--ln) solid var(--ink);
+    outline-offset:-3px}
+  .ft-cols.acc .ft-list{overflow:hidden}
+  /* THE AIR UNDER THE LAST LINK IS ON THE LAST LINK, NOT ON THE LIST, and this
+     is the same trap the תעשיות panel's note names from the other side. A grid
+     item in a 0fr track is laid out at height 0 — but `box-sizing:border-box`
+     will not take a BORDER BOX below its own padding, so `padding-bottom` on
+     `.ft-list` floored every shut row at 16px and the four came to rest with a
+     lip under each head. Inside the last `<li>` the same 16px is content, and
+     content is what `overflow:hidden` crops. Measured: 73 -> 57 per shut row. */
+  .ft-cols.acc .ft-list>li:last-child{padding-bottom:var(--sp-3)}
+  /* A LINK IN AN ACCORDION IS A TARGET, NOT A LINE OF A COLUMN. 5px of padding
+     on a 15px line is a 30px row and the pitch is 32 — under the thumb's own
+     size. --sp-2 takes the row to 42 and the pitch to 44.
+     THE LIST'S 2px GAP IS UNTOUCHED and must stay 2px (see `.ft-list`): what
+     grows is the LINK's own box, which is the target, not the air between two
+     of them, which is the arrangement. One line to revert. */
+  .ft-cols.acc .ft-l{padding-block:var(--sp-2)}
+
+  /* ---- THE MARK: the reference plus that closes to a minus, at the page's
+     own arrow weight so it belongs to the same set of strokes as every arrow
+     here (2.5 in a 19 box renders ~2.4 at this size). It is ABSOLUTE at the
+     row's far end and not a third item in the centred group — out of flow it
+     cannot pull the pair off the middle, and a control at the end of a
+     full-width row is what says the row opens. Only the VERTICAL bar moves;
+     the horizontal one is the minus and is never touched. ---- */
+  .ft-cols.acc .ft-mk{display:block;position:absolute;inset-inline-end:0;top:50%;
+    /* 16 AGAINST THE LABEL'S OWN 12px SQUARE (--eb-mk) — a third bigger,
+       which is the difference between a mark that identifies the row and a
+       mark that operates it. 18 was tried and reads louder than the 15px word
+       it stands at the end of. The bar's weight is the page's stroke: `.ar` is
+       2.5 in a 19 box and renders ~2.4 at the size these arrows are drawn. */
+    --ft-mk-s:16px;--ft-mk-w:2.2px;
+    width:var(--ft-mk-s);height:var(--ft-mk-s);
+    margin-top:calc(var(--ft-mk-s) / -2);color:var(--red)}
+  .ft-cols.acc .ft-mk::before,.ft-cols.acc .ft-mk::after{content:"";
+    position:absolute;left:0;right:0;top:50%;
+    height:var(--ft-mk-w);margin-top:calc(var(--ft-mk-w) / -2);
+    background:currentColor;
+    transition:transform .34s cubic-bezier(.62,0,.2,1)}
+  .ft-cols.acc .ft-mk::after{transform:rotate(90deg)}
+  .ft-cols.acc .ft-col.is-open .ft-mk::after{transform:rotate(90deg) scaleX(0)}
 }
 
 
@@ -6222,6 +6347,13 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.02em;height:.0
      what the wash sits on. `armed` is not added at all in this mode, so these
      are belt and braces. */
   .ft-body,.ft-foot{opacity:1!important;transform:none!important;transition:none!important}
+  /* AND THE ACCORDION SIMPLY SNAPS. The rows still open and shut — the fold is
+     navigation, not decoration — but the track's half second and the mark's
+     third of one are motion, and this page takes motion off when it is asked
+     to. The `transform` on the mark's bars is a STATE (a plus is a minus
+     turned), so it is only the transition that goes. */
+  .ft-cols.acc .ft-col,
+  .ft-cols.acc .ft-mk::before,.ft-cols.acc .ft-mk::after{transition:none!important}
   *{animation:none!important}
   .logo,.utils,.bar>*,h1 .ln-1,h1 .ln-2,.cta-row,.scroll-cue{
     opacity:1!important;transform:none!important;transition:none!important}
@@ -7151,8 +7283,8 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.02em;height:.0
          algorithm reorders punctuation, and a screenshot will not show it. -->
     <div class="ft-cols">
       <div class="ft-col">
-        <span class="ft-lbl">פתרונות</span>
-        <ul class="ft-list">
+        <button type="button" class="ft-lbl" aria-controls="ftl-1">פתרונות<i class="ft-mk" aria-hidden="true"></i></button>
+        <ul class="ft-list" id="ftl-1">
           <li><a href="#" class="ft-l">הובלה אווירית</a></li>
           <li><a href="#" class="ft-l">הובלה ימית</a></li>
           <li><a href="#" class="ft-l">הובלה יבשתית</a></li>
@@ -7173,8 +7305,8 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.02em;height:.0
         </ul>
       </div>
       <div class="ft-col">
-        <span class="ft-lbl">תעשיות</span>
-        <ul class="ft-list">
+        <button type="button" class="ft-lbl" aria-controls="ftl-2">תעשיות<i class="ft-mk" aria-hidden="true"></i></button>
+        <ul class="ft-list" id="ftl-2">
           <li><a href="#" class="ft-l">ביטחוני</a></li>
           <li><a href="#" class="ft-l">סיוע הומניטרי וממשלתי</a></li>
           <li><a href="#" class="ft-l">רכב</a></li>
@@ -7187,8 +7319,8 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.02em;height:.0
         </ul>
       </div>
       <div class="ft-col">
-        <span class="ft-lbl">אודות</span>
-        <ul class="ft-list">
+        <button type="button" class="ft-lbl" aria-controls="ftl-3">אודות<i class="ft-mk" aria-hidden="true"></i></button>
+        <ul class="ft-list" id="ftl-3">
           <li><a href="#" class="ft-l">אודות אוריין</a></li>
           <li><a href="#" class="ft-l">חברי דירקטוריון</a></li>
           <li><a href="#" class="ft-l">קשרי משקיעים</a></li>
@@ -7197,8 +7329,8 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.02em;height:.0
         </ul>
       </div>
       <div class="ft-col">
-        <span class="ft-lbl">קיימות</span>
-        <ul class="ft-list">
+        <button type="button" class="ft-lbl" aria-controls="ftl-4">קיימות<i class="ft-mk" aria-hidden="true"></i></button>
+        <ul class="ft-list" id="ftl-4">
           <li><a href="#" class="ft-l">איכות</a></li>
           <li><a href="#" class="ft-l">קוד אתי</a></li>
         </ul>
@@ -8510,6 +8642,57 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.02em;height:.0
         }, {rootMargin:'240px 0px'}).observe(ftSec);
       } else ftPlay(true);
     }
+  }
+
+  /* ---- THE FOOTER'S FOUR LISTS FOLD INTO AN ACCORDION ON A PHONE
+     (2026-09-10: *"תיצור במובייל את הפוטר כאקורדיון - הכל סגור ורק מה שלוחצים
+     עליו נפתח"*). The CSS is in the 640 query beside the centring.
+
+     `.acc` IS THE ONLY THING THAT COLLAPSES ANYTHING, and it is written here —
+     so a page with no script shows all four lists standing, which is the same
+     contract the footer's own arrival is on.
+
+     IT IS EXCLUSIVE — *"רק מה שלוחצים עליו נפתח"*. `ftOpen(i)` writes all four
+     rows every time, so opening one shuts the other three by construction and
+     there is no state to keep in step; `-1` shuts the lot, which is both the
+     start and what a second press on the open row does.
+
+     THE MEDIA QUERY IS READ IN JS AS WELL AS IN CSS, and the guard inside the
+     handler is not belt and braces: the heads stay real buttons above 640
+     (they have to — an element cannot become one on resize), so without it a
+     click up there would write `is-open` classes and `aria-expanded` onto a
+     layout that has no accordion in it. `ftFold` also CLEARS the state on the
+     way back up, or a list left shut on a phone comes back to the desktop with
+     the attribute still saying so. ---- */
+  var ftCols = document.querySelector('.ft-cols'),
+      ftMq   = window.matchMedia ? matchMedia('(max-width:640px)') : null;
+  if(ftCols && ftMq){
+    var ftTogs = [].slice.call(ftCols.querySelectorAll('.ft-lbl')),
+        ftOpen = function(i){
+          ftTogs.forEach(function(t, n){
+            var on = (n === i);
+            t.parentNode.classList.toggle('is-open', on);
+            t.setAttribute('aria-expanded', on ? 'true' : 'false');
+          });
+        },
+        ftFold = function(){
+          var on = ftMq.matches;
+          ftCols.classList.toggle('acc', on);
+          if(on) ftOpen(-1);
+          else ftTogs.forEach(function(t){
+            t.parentNode.classList.remove('is-open');
+            t.removeAttribute('aria-expanded');
+          });
+        };
+    ftTogs.forEach(function(t, i){
+      t.addEventListener('click', function(){
+        if(!ftMq.matches) return;
+        ftOpen(t.parentNode.classList.contains('is-open') ? -1 : i);
+      });
+    });
+    ftFold();
+    if(ftMq.addEventListener) ftMq.addEventListener('change', ftFold);
+    else if(ftMq.addListener) ftMq.addListener(ftFold);
   }
 
   /* ---- the burger, for the width at which the words drop into the panel ---- */
