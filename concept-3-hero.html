@@ -2621,7 +2621,25 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.02em;height:.0
                   - 40px)}
 
 .oss-pin{position:relative;
-  padding:var(--oss-py1) var(--cx) calc(var(--oss-floor) + var(--oss-band));
+  /* --sp-6 IS THE PAPER THE WAY OUT STANDS ON, AND IT IS A FLOOR ON THE AIR
+     RATHER THAN A BREAKPOINT (2026-09-10: "במובייל הכפתור הזה צמוד מידי לסקשן
+     שמתחת"). The band sits at `bottom:--oss-floor`, so WITHOUT this term the
+     band's top edge and the content box's bottom edge are THE SAME LINE — and
+     the numbers pour out of the band's underside, so anything that reaches the
+     foot of the column is welded to the next section's red. Above 1100 nothing
+     reached it: the pin is held open by the truck's min-height and the column
+     ends 82px (1200) to 103px (1440) clear of the band. Below it the truck goes
+     into flow, min-height is 0, and the CTA IS the foot of the column —
+     measured, the gap is exactly 0 at every width from 899 down, and 0 at 901
+     too, which is why this is in the base rule and not in the 900 query.
+     WHY IT COSTS THE WIDE PAGE NOTHING: --sp-6 is 56 at 1440 and 47 at 1200,
+     both inside the slack above, so min-height still binds and neither the
+     truck nor the band moves. Keep it under that slack if it is ever raised.
+     THE MIN-HEIGHT BELOW DELIBERATELY DOES NOT CARRY THIS TERM: that number is
+     the TRUCK's clearance, and the truck hangs off --oss-floor, not off the
+     column's foot. The two airs are not the same air. */
+  padding:var(--oss-py1) var(--cx)
+          calc(var(--sp-6) + var(--oss-floor) + var(--oss-band));
   /* THE TRUCK IS OUT OF FLOW, so it cannot hold the section open by itself —
      without this the pin is only as tall as the words and `overflow:clip`
      takes the truck's roof off. 1.28 is the truck's own height plus the air it
