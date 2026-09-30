@@ -7766,7 +7766,7 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.02em;height:.0
       film.src = 'truck-drive-alpha.mov';
 
     var REAR = [-703,-689,-675,-662,-648,-634,-620,-606,-593,-579,-565,-551,-537,-524,-510,-496,-482,-469,-455,-441,-427,-413,-400,-386,-372,-358,-344,-331,-317,-303,-289,-275,-262,-248,-234,-220,-206,-193,-179,-165,-151,-138,-124,-110,-96,-82,-69,-55,-41,-27,-13,0,14,28,42,56,69,83,97,111,125,138,152,166,180,193,207,221,235,249,262,276,290,304,318,331,345,359,373,386,399,412,424,436,448,460,471,481,492,502,512,521,530,539,548,556,563,571,578,585,591,597,603,609,614,619,623,627,631,634,638,640,643,645,647,648,650,650,651,651],
-        FPS = 60, FW = 1280;
+        FPS = 60, FW = 1280, LEAD = 60;
     var mqStack = window.matchMedia('(max-width:900px)'),
         calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches,
         played = false, raf = 0;
@@ -7779,12 +7779,28 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.02em;height:.0
     function clip(t){
       if(mqStack.matches){ col.style.clipPath = ''; return; }
       var vr = film.getBoundingClientRect(), cr = col.getBoundingClientRect();
-      var x = vr.left + rearAt(t) / FW * vr.width;      /* the rear, on the page */
+      /* the rear, on the page - LEAD 1280ths AHEAD of it. The cargo box is
+         opaque for its whole height there, so the lead is never seen; without it
+         any lag between the painted frame and this clip showed as a strip of
+         bare paper trailing the truck (2026-09-30: "רואים סטריפ אנכי לבן
+         מאחוריה"). 60 is about one headless frame of lag at 1440; below the box the chassis has gaps, so do not push it much further. */
+      var x = vr.left + (rearAt(t) + LEAD) / FW * vr.width;
       var cut = Math.max(0, Math.min(cr.width, cr.right - x));
       col.style.clipPath = cut >= cr.width ? 'inset(0 100% 0 0)'
                          : (cut <= 0 ? '' : 'inset(-2em ' + cut.toFixed(1) + 'px -2em -2em)');
     }
+    /* THE CLIP FOLLOWS THE FRAME THAT IS ON SCREEN, not the clock:
+       requestVideoFrameCallback hands over the painted frame's own mediaTime,
+       where currentTime on a rAF runs ahead of or behind the picture. rAF is
+       only the fallback. */
+    var rvfc = 'requestVideoFrameCallback' in HTMLVideoElement.prototype;
+    function onFrame(now, meta){
+      clip(meta.mediaTime);
+      if(!film.paused && !film.ended) raf = film.requestVideoFrameCallback(onFrame);
+      else { raf = 0; clip(film.ended ? 99 : film.currentTime); }
+    }
     function tick(){
+      if(rvfc){ raf = film.requestVideoFrameCallback(onFrame); return; }
       clip(film.currentTime);
       raf = (!film.paused && !film.ended) ? requestAnimationFrame(tick) : 0;
       if(!raf) clip(film.ended ? 99 : film.currentTime);
@@ -7794,11 +7810,12 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.02em;height:.0
       played = true;
       var p = film.play();
       if(p && p.catch) p.catch(function(){ film.currentTime = film.duration || 2; clip(99); });
-      if(!raf) raf = requestAnimationFrame(tick);
+      if(!raf) tick();
     }
     function rewind(){
       played = false;
       film.pause();
+      if(raf){ if(rvfc) film.cancelVideoFrameCallback(raf); else cancelAnimationFrame(raf); raf = 0; }
       try{ film.currentTime = 0; }catch(e){}
       clip(0);
     }
@@ -7811,7 +7828,7 @@ h1 .rl::after{content:"";position:absolute;right:0;left:0;bottom:.02em;height:.0
     }
 
     clip(0);
-    film.addEventListener('play', function(){ if(!raf) raf = requestAnimationFrame(tick); });
+    film.addEventListener('play', function(){ if(!raf) tick(); });
     film.addEventListener('ended', function(){ clip(99); });
     window.addEventListener('resize', function(){ clip(played ? film.currentTime : 0); });
 
