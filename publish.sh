@@ -24,6 +24,8 @@ FILES=(
   "hero-video-2-poster.jpg"
   "truck-drive.mp4"
   "truck-drive-poster.jpg"
+  "truck-drive-alpha.webm"
+  "truck-drive-alpha.mov"
 )
 
 for f in "${FILES[@]}"; do
